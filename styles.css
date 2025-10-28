@@ -50,11 +50,12 @@ body {
 }
 
 .container {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     position: relative;
     z-index: 2;
 }
-
 .play-button {
     width: 200px;
     height: 200px;
@@ -67,7 +68,7 @@ body {
     border: 5px solid #ffffff;
     box-shadow: 0 0 20px rgba(255,255,255,0.8), inset 0 0 20px rgba(0,0,0,0.2);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    position: relative;
+    margin-bottom: 10px;
 }
 
 .play-button:hover, .play-button:active {
@@ -82,11 +83,37 @@ body {
 }
 
 .status {
-    margin-top: 20px;
     font-size: 1.2em;
     color: white;
     text-shadow: 0 0 10px rgba(0,0,0,0.5);
     font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.now-playing {
+    font-size: 1.8em;
+    margin-top:50px;
+    color: white;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+
+}
+
+.now-playing .title {
+    font-size: 2.2rem;
+    font-family: 'Mountains of Christmas', cursive;
+}
+
+.now-playing .artist {
+    font-size:1.2rem;
+}
+
+.now-playing .label {
+    font-size:.9rem;
+}
+
+.now-playing .time {
+    font-size:.9rem;
 }
 
 /* Responsive design */
@@ -102,4 +129,5 @@ body {
     .status {
         font-size: 1em;
     }
+   
 }
