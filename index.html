@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Radio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#b22222">
+</head>
+<body>
+    <div class="background-image"></div>
+    <div class="snowflakes">
+        <div class="snowflake">❄</div>
+        <div class="snowflake">❄</div>
+        <div class="snowflake">❄</div>
+        <!-- more snowflakes -->
+    </div>
+    <div class="container">
+        <div class="play-button" id="playBtn">
+            <img src="images/logo.png" alt="Play Christmas Music" id="logoImg">
+        </div>
+        <div class="status" id="status">Tap to Play</div>
+    </div>
+    <audio id="audio" preload="none">
+        <source src="https://stream.radio.nwbbc.com:8010/radio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <script src="script.js"></script>
+</body>
+</html>
