@@ -1,6 +1,6 @@
 {
     "name": "Christmas Radio",
-    "short_name": "Xmas Radio",
+    "short_name": "Christmas Radio",
     "description": "Festive Christmas music radio station PWA",
     "start_url": "/",
     "display": "standalone",
