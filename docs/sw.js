@@ -2,7 +2,6 @@
 const CACHE_NAME = 'christmas-radio-v1';
 
 self.addEventListener('install', event => {
-    console.log('Service Worker: Install event');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
@@ -22,7 +21,6 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-    console.log('Service Worker: Activate event');
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(

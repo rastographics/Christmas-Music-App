@@ -3,11 +3,14 @@ const audio = document.getElementById('audio');
 const statusEl = document.getElementById('status');
 const logoImg = document.getElementById('logoImg');
 const nowPlayingEl = document.getElementById('nowPlaying');
+const progressBarEl = document.getElementById('progressBar');
+const progressMeterEl = document.getElementById('progressMeter');
 
 let isPlaying = false;
 let fetchInterval;
 let localElapsed = 0;
 let localDuration = 0;
+let playedAt = 0;
 let trackInterval;
 let currentArtist = '';
 let currentTitle = '';
@@ -112,39 +115,66 @@ function updateDisplay() {
                 <div class="artist">${currentArtist}</div>
                 <div class="title">${currentTitle}</div>
                 <div class="time"> ${elapsedMin}:${elapsedSec} / ${durationMin}:${durationSec}</div>`;
+
+        // Update progress bar
+        const progressPercent = localDuration > 0 ? (localElapsed / localDuration) * 100 : 0;
+        progressBarEl.style.width = `${Math.min(progressPercent, 100)}%`;
+        progressMeterEl.style.opacity = '1';
     } else {
         nowPlayingEl.textContent = songInfoError ? 'Unable to load song info' : 'No song data available';
+        // Hide progress bar when no song info
+        progressBarEl.style.width = '0%';
+        progressMeterEl.style.opacity = '0';
     }
 }
 
 function updateElapsed() {
-    localElapsed++;
+    if (playedAt > 0) {
+        const currentTime = Math.floor(Date.now() / 1000);
+        localElapsed = currentTime - playedAt;
+    } else {
+        localElapsed++;
+    }
     updateDisplay();
 }
 
 function fetchCurrentSong() {
-    fetch('https://stream.radio.nwbbc.com/api/nowplaying/christmas')
+    fetch('https://stream.radio.nwbbc.com/api/nowplaying/christmas', {
+        cache: 'no-store'
+    })
         .then(response => {
             if (!response.ok) throw new Error('Network response was not ok');
             return response.json();
         })
         .then(data => {
-            console.log('Fetched nowplaying data:', data);
             if (data.now_playing && data.now_playing.song) {
                 const song = data.now_playing.song;
                 currentArtist = song.artist;
                 currentTitle = song.title;
-                localElapsed = data.now_playing.elapsed || 0;
+                playedAt = data.now_playing.played_at || 0;
                 localDuration = data.now_playing.duration || 0;
+                if (playedAt > 0) {
+                    const currentTime = Math.floor(Date.now() / 1000);
+                    localElapsed = currentTime - playedAt;
+                } else {
+                    localElapsed = data.now_playing.elapsed || 0;
+                }
+                const now = new Date();
+                const hours = now.getHours();
+                const period = hours >= 12 ? 'pm' : 'am';
+                const displayHours = (hours % 12 || 12).toString();
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                const timestamp = `${displayHours}:${minutes}:${seconds}${period}`;
+                console.log(`${timestamp}, Elapsed: ${localElapsed}`);
                 songInfoError = false;
-                console.log('Artist:', currentArtist, 'Title:', currentTitle, 'Elapsed:', localElapsed, 'Duration:', localDuration);
                 updateDisplay();
             } else {
-                console.log('No song data available');
                 currentArtist = '';
                 currentTitle = '';
                 localElapsed = 0;
                 localDuration = 0;
+                playedAt = 0;
                 songInfoError = false;
                 updateDisplay();
             }
@@ -155,6 +185,7 @@ function fetchCurrentSong() {
             currentTitle = '';
             localElapsed = 0;
             localDuration = 0;
+            playedAt = 0;
             songInfoError = true;
             updateDisplay();
         });
@@ -163,12 +194,6 @@ function fetchCurrentSong() {
 // Register service worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('SW registered: ', registration);
-            })
-            .catch(registrationError => {
-                console.log('SW registration failed: ', registrationError);
-            });
+        navigator.serviceWorker.register('/sw.js');
     });
 }
